@@ -9,7 +9,6 @@ App Template for static publishing.
 
 import app_config
 import json
-import oauth
 import static
 
 from flask import Flask, make_response, render_template
@@ -23,7 +22,6 @@ app.add_template_filter(smarty_filter, name='smarty')
 app.add_template_filter(urlencode_filter, name='urlencode')
 
 @app.route('/')
-@oauth.oauth_required
 def index():
     """
     Example view demonstrating rendering a simple HTML page.
@@ -57,7 +55,6 @@ def test_widget():
     return make_response(render_template('test_widget.html', **make_context()))
 
 app.register_blueprint(static.static)
-app.register_blueprint(oauth.oauth)
 
 # Enable Werkzeug debug pages
 if app_config.DEBUG:

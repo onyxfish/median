@@ -12,11 +12,8 @@ from termcolor import colored
 import app_config
 
 # Other fabfiles
-import data
 import flat
-import issues
 import render
-import text
 import utils
 
 if app_config.DEPLOY_TO_SERVERS:
@@ -24,10 +21,6 @@ if app_config.DEPLOY_TO_SERVERS:
 
 if app_config.DEPLOY_CRONTAB:
     import cron_jobs
-
-# Bootstrap can only be run once, then it's disabled
-if app_config.PROJECT_SLUG == '$NEW_PROJECT_SLUG':
-    import bootstrap
 
 """
 Base configuration
@@ -127,14 +120,6 @@ has two primary functions: Pushing flat files to S3 and deploying
 code to a remote server if required.
 """
 @task
-def update():
-    """
-    Update all application data not in repository (copy, etc).
-    """
-    text.update()
-    data.update()
-
-@task
 def deploy(remote='origin', reload=False):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
@@ -151,9 +136,6 @@ def deploy(remote='origin', reload=False):
 
         servers.checkout_latest(remote)
 
-        servers.fabcast('text.update')
-        servers.fabcast('data.update')
-
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
 
@@ -163,9 +145,6 @@ def deploy(remote='origin', reload=False):
     update()
     render.render_all()
 
-    # Clear files that should never be deployed
-    local('rm -rf www/live-data')
-
     flat.deploy_folder(
         app_config.S3_BUCKET,
         'www',
@@ -173,52 +152,7 @@ def deploy(remote='origin', reload=False):
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
-        ignore=['www/live-data/*']
-    )
-
-    if reload:
-        reset_browsers()
-
-    if not check_timestamp():
-        reset_browsers()
-
-
-@task
-def check_timestamp():
-    require('settings', provided_by=[production, staging])
-
-    bucket = utils.get_bucket(app_config.S3_BUCKET)
-    k = Key(bucket)
-    k.key = '%s/live-data/timestamp.json' % app_config.PROJECT_SLUG
-    if k.exists():
-        return True
-    else:
-        return False
-
-@task
-def reset_browsers():
-    """
-    Deploy a timestamp so the client will reset their page. For bugfixes
-    """
-    require('settings', provided_by=[production, staging])
-
-    if not os.path.exists('www/live-data'):
-        os.makedirs('www/live-data')
-
-    payload = {}
-    now = datetime.now().strftime('%s')
-    payload['timestamp'] = now
-
-    with open('www/live-data/timestamp.json', 'w') as f:
-        json.dump(payload, f)
-
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        'www/live-data',
-        '%s/live-data' % app_config.PROJECT_SLUG,
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
-        }
+        ignore=[]
     )
 
 """
