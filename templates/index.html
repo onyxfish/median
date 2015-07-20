@@ -1,56 +1,86 @@
 {% extends '_base.html' %}
 
-{% block header_content %}
-<header>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>{{ COPY.content.project_name|smarty }}</h1>
-                <h2>{{ COPY.content.lorem_ipsum|smarty }}</h2>
-            </div>
-        </div>
+{% block content %}
+<header class="parent-header">
+    <div class="segment">
+        <h1 class="production">production</h1>
+    </div>
+
+    <div class="segment">
+        <a id="resize-sidebar" class="btn" href="#">Sidebar (180px)</a>
+    </div>
+
+    <div class="segment">
+        <a id="resize-mobile" class="btn" href="#">Mobile (300px)</a>
+    </div>
+
+    <div class="segment">
+        <a id="resize-desktop" class="btn" href="#">Desktop (730px)</a>
+    </div>
+
+    <div class="segment">
+        <a id="resize-fluid" class="btn" href="#">Fluid (100%)</a>
+    </div>
+
+    <div class="right">
+
+
     </div>
 </header>
-{% endblock %}
 
+<div class="content">
+    <p>Headline</p>
+    <input id="headline" value="TKTK"></input>
 
-{% block content %}
-<h1>{{ COPY.content.project_name }}</h1>
+    <p>Subhed</p>
+    <input id="subhed" value=""></input>
 
-<div id="story-meta">
-    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
-    <p class="dateblock">
-        <span class="date">{{ COPY.content.pubdate }}</span>
-        <span class="time"> {{ COPY.content.pubtime }}</span>
-    </p>
-</div>
+    <p>Footer</p>
+    <input id="footer" value=""></input>
 
-<a class="comment-button comment-button-bubble comment-drawer-toggle" href="javascript:">
-    <span class="comment-count"></span>
-</a>
+    <p>Y-Axis ticks</p>
+    <input id="ticks-y" value="4"></input>
 
-<a class="comment-button comment-button-article comment-drawer-toggle" data-toggle="modal" data-backdrop="static" data-target="#share-modal">
-    <span class="comment-count"></span>
-    <span class="comment-label">Share / Discuss</span>
-</a>
+    <p>CSV Data</p>
+    <textarea id="csv">label,amt
+2009,18
+2010,197
+2011,192
+2012,-80
+2013,249
+2014,278
+2015,16</textarea>
 
-<h2 class="knockout-example">Example COPY list</h2>
-<dl>
-    {% for row in COPY.example_list %}
-    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
-    {% endfor %}
-</dl>
-
-<h2 class="knockout-example">JST example</h2>
-<p id="template-example"></p>
-{% endblock %}
-
-
-{% block wide_content %}
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="knockout-example">{{ COPY.content.footer_title }}</h2>
-        <p>{{ COPY.content.lorem_ipsum }}</p>
+    <div id="preview-wrapper">
+        <div id='preview'>
+        </div>
     </div>
+
+    <h2><span class="production">Production</span> embed code (for Seamus)</h2>
+
+    <textarea id="embed" readonly="readonly" rows="20" cols="100"></textarea >
 </div>
+
+<script type="text/template" id="embed-template">
+<div id="<%= slug %>">
+</div>
+
+<%= scriptTag('http://apps.npr.org/autochart/js/lib/pym.js') %><%= closeScript() %>
+
+<%= scriptTag() %>
+$(function() {
+var configuration = <%= JSON.stringify(configuration) %>;
+
+var pymParent = new pym.Parent(
+    '<%= slug %>',
+    'http://apps.npr.org/autochart/child.html',
+    {}
+);
+
+pymParent.onMessage('ready', function() {
+    pymParent.sendMessage('configure', JSON.stringify(configuration));
+});
+});
+<%= closeScript() %>
+</script>
 {% endblock %}

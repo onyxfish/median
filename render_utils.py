@@ -7,7 +7,7 @@ import time
 import urllib
 import subprocess
 
-from flask import Markup, g, render_template, request
+from flask import Markup, g, request
 from slimit import minify
 from smartypants import smartypants
 
@@ -111,9 +111,6 @@ class JavascriptIncluder(Includer):
         context = make_context()
         context['paths'] = src_paths
 
-        header = render_template('_js_header.js', **context)
-        output.insert(0, header)
-
         return '\n'.join(output)
 
 class CSSIncluder(Includer):
@@ -143,10 +140,6 @@ class CSSIncluder(Includer):
 
         context = make_context()
         context['paths'] = src_paths
-
-        header = render_template('_css_header.css', **context)
-        output.insert(0, header)
-
 
         return '\n'.join(output)
 
@@ -221,4 +214,3 @@ def smarty_filter(s):
     except:
         print 'This string failed to encode: %s' % s
         return Markup(s)
-
