@@ -1,0 +1,20 @@
+<div id="<%= slug %>">
+</div>
+
+<script src="http://apps.npr.org/autochart/js/lib/pym.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+$(function() {
+var configuration = <%= JSON.stringify(configuration) %>;
+
+var pymParent = new pym.Parent(
+    '<%= slug %>',
+    'http://apps.npr.org/autochart/child.html',
+    {}
+);
+
+pymParent.onMessage('ready', function() {
+    pymParent.sendMessage('configure', JSON.stringify(configuration));
+});
+});
+</script>

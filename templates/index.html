@@ -60,27 +60,4 @@
 
     <textarea id="embed" readonly="readonly" rows="20" cols="100"></textarea >
 </div>
-
-<script type="text/template" id="embed-template">
-<div id="<%= slug %>">
-</div>
-
-<%= scriptTag('http://apps.npr.org/autochart/js/lib/pym.js') %><%= closeScript() %>
-
-<%= scriptTag() %>
-$(function() {
-var configuration = <%= JSON.stringify(configuration) %>;
-
-var pymParent = new pym.Parent(
-    '<%= slug %>',
-    'http://apps.npr.org/autochart/child.html',
-    {}
-);
-
-pymParent.onMessage('ready', function() {
-    pymParent.sendMessage('configure', JSON.stringify(configuration));
-});
-});
-<%= closeScript() %>
-</script>
 {% endblock %}

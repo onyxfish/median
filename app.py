@@ -23,15 +23,7 @@ app.add_template_filter(urlencode_filter, name='urlencode')
 
 @app.route('/')
 def index():
-    """
-    Example view demonstrating rendering a simple HTML page.
-    """
-    context = make_context()
-
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
-
-    return make_response(render_template('index.html', **context))
+    return make_response(render_template('index.html', **make_context()))
 
 @app.route('/graphic.html')
 def graphic():

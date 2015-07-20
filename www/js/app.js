@@ -14,7 +14,6 @@ var csvEl = null;
 var embedEl = null;
 
 var pymParent = null;
-var embedTemplate = null;
 
 /*
  * Setup editor and preview.
@@ -33,8 +32,6 @@ var onWindowLoaded = function() {
     csvEl = d3.select('#csv');
 
     embedEl = d3.select('#embed');
-
-    embedTemplate = _.template(d3.select('#embed-template').html());
 
     resizeSidebarEl.on('click', function() {
         previewWrapperEl.style.width = '180px';
@@ -133,23 +130,7 @@ var updateChart = function() {
  * Generate new embed code for the current chart configuration.
  */
 var generateEmbedCode = function(configuration) {
-    var scriptTag = function(src) {
-        var tag = '<script type="text/javascript"';
-
-        if (src) {
-            tag += ' src="' + src + '"';
-        }
-
-        return tag + '>';
-    }
-
-    var closeScript = function() {
-        return '</script>';
-    }
-
-    embedEl.text(embedTemplate({
-        'scriptTag': scriptTag,
-        'closeScript': closeScript,
+    embedEl.text(JST.embed({
         'slug': 'test-graphic',
         'configuration': configuration
     }))
