@@ -12,7 +12,6 @@ from termcolor import colored
 import app_config
 
 # Other fabfiles
-import assets
 import data
 import flat
 import issues
@@ -130,10 +129,9 @@ code to a remote server if required.
 @task
 def update():
     """
-    Update all application data not in repository (copy, assets, etc).
+    Update all application data not in repository (copy, etc).
     """
     text.update()
-    assets.sync()
     data.update()
 
 @task
@@ -154,7 +152,6 @@ def deploy(remote='origin', reload=False):
         servers.checkout_latest(remote)
 
         servers.fabcast('text.update')
-        servers.fabcast('assets.sync')
         servers.fabcast('data.update')
 
         if app_config.DEPLOY_CRONTAB:
@@ -176,16 +173,7 @@ def deploy(remote='origin', reload=False):
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
-        ignore=['www/assets/*', 'www/live-data/*']
-    )
-
-    flat.deploy_folder(
-        app_config.S3_BUCKET,
-        'www/assets',
-        '%s/assets' % app_config.PROJECT_SLUG,
-        headers={
-            'Cache-Control': 'max-age=%i' % app_config.ASSETS_MAX_AGE
-        }
+        ignore=['www/live-data/*']
     )
 
     if reload:
