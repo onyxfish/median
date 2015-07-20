@@ -20,14 +20,9 @@
     {% block content %}
     {% endblock content %}
 
-    {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/lib/bootstrap.js') }}
-    {{ JS.push('js/lib/moment.js') }}
-    {{ JS.push('js/lib/ZeroClipboard.js') }}
-    {{ JS.push('js/lib/simpleStorage.js') }}
-    {{ JS.push('js/storage.js') }}
+    {{ JS.push('js/lib/d3.min.js') }}
+    {{ JS.push('js/lib/pym.js') }}
     {{ JS.push('js/templates.js') }}
     {{ JS.push('js/app.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
